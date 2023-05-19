@@ -2,14 +2,35 @@ import csv
 import os
 import random
 import pandas as pd
+import locale
+from datetime import date
 
-pasta = '.' 
+pasta = r"C:\Users\B900780\Desktop\Lista Aleatória Python" 
+pastaDef = pasta.replace("\\", "/")
 extensoes = ['csv'] 
 arq = []
+arqManuais = []
+arqAutomaticos = []
 listaParaSelecionar = []
 escolhas = []
+escolhasAutomaticas = []
 
-arquivos = os.listdir(pasta)
+dados1 = []
+dados2 = []
+dados3 = []
+dados4 = []
+dados5 = []
+dados6 = []
+dados7 = []
+dados8 = []
+dados9 = []
+dados10 = []
+
+datasSelecionadas = []
+codTarifaSelecionada = []
+listafinal = []
+
+arquivos = os.listdir(pastaDef)
 for i in arquivos:
 	extensao = i.split('.')[-1]
 	if extensao in extensoes:
@@ -17,129 +38,87 @@ for i in arquivos:
 		listaParaSelecionar.append(x)
 		arq.append(i)
 
-while len(escolhas) < 10:
-    escolha = random.choice(listaParaSelecionar)
+i = 0
+while (i < 10):
+    arqManuais.append(listaParaSelecionar[i])
+    i += 1   
+
+i2 = 10
+while (i2 < 20):
+    arqAutomaticos.append(listaParaSelecionar[i2])
+    i2 += 1
+
+while len(escolhas) < 5:
+    escolha = random.choice(arqManuais)
     if not any([s.endswith(escolha[-3:]) for s in escolhas]):
         escolhas.append(escolha)
 
-dados1 = []
+while len(escolhasAutomaticas) < 5:
+    escolhaAuto = random.choice(arqAutomaticos)
+    if not any([s.endswith(escolhaAuto[-3:]) for s in escolhas]) and not any([s.endswith(escolhaAuto[-3:]) for s in escolhasAutomaticas]):
+        escolhasAutomaticas.append(escolhaAuto)    
 
-dados2 = []
-data2 = []
-datasNaoRepetidadas2 = []
+for i in escolhasAutomaticas:
+    escolhas.append(i)
 
-dados3 = []
-data3 = []
-datasNaoRepetidadas3 = []
-
-dados4 = []
-data4 = []
-datasNaoRepetidadas4 = []
-
-dados5 = []
-data5 = []
-datasNaoRepetidadas5 = []
-
-dados6 = []
-data6 = []
-datasNaoRepetidadas6 = []
-
-dados7 = []
-data7 = []
-datasNaoRepetidadas7 = []
-
-dados8 = []
-data8 = []
-datasNaoRepetidadas8 = []
-
-dados9 = []
-data9 = []
-datasNaoRepetidadas9 = []
-
-dados10 = []
-data10 = []
-datasNaoRepetidadas10 = []
-
-datasSelecionadas = []
-
-listafinal = []
-
-
-with open(str(escolhas[0] + ".csv")) as arquivocsv:
-    ler = csv.DictReader(arquivocsv, delimiter="\t")
-    for linha in ler:
-        dados1.append(linha)
-
-x = str((dados1[0].items()))
-y = int(x.find('DT_LNC'))
-z = x[y+10:y+20]
-datasSelecionadas.append(z)
-
-def povoarVariaveis(arquivo, listaDeDados, dataDoRegistro, datasSelecionadas, datasNaoRepetidadas):
-    with open(arquivo) as arquivocsv:
+def povoarListaDados(dadosListaAleatorio, listaDeDados):
+    with open(str(dadosListaAleatorio + ".csv")) as arquivocsv:
         ler = csv.DictReader(arquivocsv, delimiter="\t")
         for linha in ler:
-            x = str((linha.items()))
-            y = int(x.find('DT_LNC'))
-            z = x[y+10:y+20]
+            dados1.append(linha)
             listaDeDados.append(linha)
-            dataDoRegistro.append(z)
-            if z not in datasSelecionadas:
-                datasNaoRepetidadas.append(z)
 
-povoarVariaveis(str(escolhas[1])+ ".csv", dados2, data2, datasSelecionadas, datasNaoRepetidadas2)                
-registroNaoRepetido2 = int(data2.index(datasNaoRepetidadas2[0]))
-datasSelecionadas.append(datasNaoRepetidadas2[0])
+def povoarVariaveis(listaDeDados):
+    i = 0
+    while i < len(listaDeDados):
+        if (str(listaDeDados[i]['DT_LNC'])[0:10] in datasSelecionadas) or (listaDeDados[i]['CD_TAR'] in codTarifaSelecionada):
+            i += 1
+            continue
+        else:
+            listafinal.append(listaDeDados[i])
+            datasSelecionadas.append(listaDeDados[i]['DT_LNC'][0:10]) 
+            codTarifaSelecionada.append(listaDeDados[i]['CD_TAR'])
+            break
 
-povoarVariaveis(str(escolhas[2])+ ".csv", dados3, data3, datasSelecionadas, datasNaoRepetidadas3)
-registroNaoRepetido3 = int(data3.index(datasNaoRepetidadas3[0]))
-datasSelecionadas.append(datasNaoRepetidadas3[0])
+povoarListaDados(escolhas[0], dados1)
+povoarListaDados(escolhas[1], dados2)
+povoarListaDados(escolhas[2], dados3)
+povoarListaDados(escolhas[3], dados4)
+povoarListaDados(escolhas[4], dados5)
+povoarListaDados(escolhas[5], dados6)
+povoarListaDados(escolhas[6], dados7)
+povoarListaDados(escolhas[7], dados8)
+povoarListaDados(escolhas[8], dados9)
+povoarListaDados(escolhas[9], dados10)
 
-povoarVariaveis(str(escolhas[3])+ ".csv", dados4, data4, datasSelecionadas, datasNaoRepetidadas4)
-registroNaoRepetido4 = int(data4.index(datasNaoRepetidadas4[0]))
-datasSelecionadas.append(datasNaoRepetidadas4[0])
+povoarVariaveis(dados1)
+povoarVariaveis(dados2)
+povoarVariaveis(dados3)
+povoarVariaveis(dados4)
+povoarVariaveis(dados5)
+povoarVariaveis(dados6)
+povoarVariaveis(dados7)
+povoarVariaveis(dados8)
+povoarVariaveis(dados9)
+povoarVariaveis(dados10)
 
-povoarVariaveis(str(escolhas[4])+ ".csv", dados5, data5, datasSelecionadas, datasNaoRepetidadas5)
-registroNaoRepetido5 = int(data5.index(datasNaoRepetidadas5[0]))
-datasSelecionadas.append(datasNaoRepetidadas5[0])
+indice = 0
 
-povoarVariaveis(str(escolhas[5])+ ".csv", dados6, data6, datasSelecionadas, datasNaoRepetidadas6)
-registroNaoRepetido6 = int(data6.index(datasNaoRepetidadas6[0]))
-datasSelecionadas.append(datasNaoRepetidadas6[0])
+while indice < len(listafinal):
+    valor = float(listafinal[indice]['VR_COB'])
+    locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+    valor = locale.currency(valor, grouping=True, symbol=True)
+    listafinal[indice]['VR_COB'] = valor
 
-povoarVariaveis(str(escolhas[6])+ ".csv", dados7, data7, datasSelecionadas, datasNaoRepetidadas7)
-registroNaoRepetido7 = int(data7.index(datasNaoRepetidadas7[0]))
-datasSelecionadas.append(datasNaoRepetidadas7[0])
+    indice += 1
 
-povoarVariaveis(str(escolhas[7])+ ".csv", dados8, data8, datasSelecionadas, datasNaoRepetidadas8)
-registroNaoRepetido8 = int(data8.index(datasNaoRepetidadas8[0]))
-datasSelecionadas.append(datasNaoRepetidadas8[0])
+data_atual = str(date.today())
+nomeArquivoFinal = "autoverificacao" + "_" + data_atual[5:7] + "_" + data_atual[0:4] + ".xlsx"
+print(nomeArquivoFinal)
 
-povoarVariaveis(str(escolhas[8])+ ".csv", dados9, data9, datasSelecionadas, datasNaoRepetidadas9)
-registroNaoRepetido9 = int(data9.index(datasNaoRepetidadas9[0]))
-datasSelecionadas.append(datasNaoRepetidadas9[0])
+df = (pd.DataFrame(listafinal)).style.set_properties(**{'text-align': 'center'})
 
-povoarVariaveis(str(escolhas[9])+ ".csv", dados10, data10, datasSelecionadas, datasNaoRepetidadas10)
-registroNaoRepetido10 = int(data10.index(datasNaoRepetidadas10[0]))
-datasSelecionadas.append(datasNaoRepetidadas10[0])
-
-listafinal.append(dados1[1])
-listafinal.append(dados2[registroNaoRepetido2])
-listafinal.append(dados3[registroNaoRepetido3])
-listafinal.append(dados4[registroNaoRepetido4])
-listafinal.append(dados5[registroNaoRepetido5])
-listafinal.append(dados6[registroNaoRepetido6])
-listafinal.append(dados7[registroNaoRepetido7])
-listafinal.append(dados8[registroNaoRepetido8])
-listafinal.append(dados9[registroNaoRepetido9])
-listafinal.append(dados10[registroNaoRepetido10])
-
-print(listafinal)
-
-df = pd.DataFrame(listaFinal)
-df.to_excel('registros.xlsx', index=False)
-
-writer = pd.ExcelWriter('C:/Users/gabri/OneDrive/Documentos/a/RegistrosGerados/registrosAleatorios.xlsx', engine='openpyxl')
+writer = pd.ExcelWriter('C:/Users/B900780/Desktop/Lista Aleatória Python/Relatorios Registros Aleatórios/' + nomeArquivoFinal, engine='openpyxl')
 df.to_excel(writer, sheet_name='Dados', index=False)
 worksheet = writer.sheets['Dados']
 
@@ -154,7 +133,34 @@ for col in worksheet.columns:
         except:
             pass
         
-    adjusted_width = (max_length + 2)
+    adjusted_width = (max_length + 5)
     worksheet.column_dimensions[column].width = adjusted_width
 
-writer.save()
+writer.close()
+
+print()
+print('linhas do arquivo gerado:')
+print(listafinal[0])
+print(listafinal[1])
+print(listafinal[2])
+print(listafinal[3])
+print(listafinal[4])
+print(listafinal[5])
+print(listafinal[6])
+print(listafinal[7])
+print(listafinal[8])
+print(listafinal[9])
+
+
+print()
+print('Arquivos escolhidos aleatóriamente:')
+print(escolhas[0])
+print(escolhas[1])
+print(escolhas[2])
+print(escolhas[3])
+print(escolhas[4])
+print(escolhas[5])
+print(escolhas[6])
+print(escolhas[7])
+print(escolhas[8])
+print(escolhas[9])
